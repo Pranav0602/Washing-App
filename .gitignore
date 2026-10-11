@@ -1,0 +1,49 @@
+# ---------------------------------------------------------------------------
+# Repository-wide ignores. backend/.gitignore and washing-app/.gitignore cover
+# their own trees; this file covers the repository root.
+# ---------------------------------------------------------------------------
+
+# Secrets - never commit. Each service also ignores its own .env.
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+coverage.xml
+*.egg-info/
+
+# Local runtime data (evidence objects, logs, uploads)
+var/
+*.log
+*.err
+backend/var/
+
+# Node / Expo
+node_modules/
+.expo/
+dist/
+build/
+web-build/
+*.tsbuildinfo
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# Editors and OS
+# NOTE: washing-app/.vscode holds shareable editor settings and is tracked.
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+
+# Local agent scratch
+.opencode/

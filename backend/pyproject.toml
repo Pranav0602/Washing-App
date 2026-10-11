@@ -1,0 +1,69 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "carwash-backend"
+version = "2.0.0"
+description = "On-demand car wash platform API (Django REST Framework modular monolith)"
+requires-python = ">=3.11"
+dependencies = [
+    "Django>=5.0,<5.2",
+    "djangorestframework>=3.15",
+    "psycopg[binary]>=3.1",
+    "django-cors-headers>=4.3",
+    "django-filter>=24.2",
+    "PyJWT>=2.8",
+    "python-dotenv>=1.0",
+    "whitenoise>=6.6",
+    "gunicorn>=21.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-django>=4.8",
+    "pytest-cov>=5.0",
+    "factory-boy>=3.3",
+    "ruff>=0.4",
+]
+
+[tool.setuptools]
+packages = ["config", "apps"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+exclude = ["*/migrations/*", ".venv", "venv"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "C4", "DJ", "S"]
+ignore = [
+    "E501",    # line length handled by the formatter
+    "S101",    # assert is fine in tests
+    "B008",    # Django ORM default=callable idiom
+]
+
+[tool.ruff.lint.per-file-ignores]
+"*/tests/*" = ["S105", "S106", "S311"]
+"config/settings/*" = ["S105", "S106"]
+# Verification scripts must call django.setup() before importing app models.
+"scripts/*.py" = ["E402"]
+"scripts/*" = ["S105", "S106"]
+# A local seed command must set a usable initial password for the demo staff
+# accounts it creates. These values are development-only and never deployed.
+"apps/common/management/commands/seed_pilot.py" = ["S106"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["apps", "config"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings.test"
+python_files = ["test_*.py"]
+testpaths = ["apps", "tests"]
+addopts = "-q --strict-markers --disable-warnings"
+filterwarnings = ["ignore::DeprecationWarning:pkg_resources.*"]
+
+[tool.coverage.run]
+source = ["apps"]
+omit = ["*/migrations/*", "*/tests/*", "*/adapters/*"]
